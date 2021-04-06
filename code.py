@@ -1,3 +1,5 @@
+#this is designed to run on an adafruit QT Py board running Circuit Python 6.1.0, using a VL53L0X ToF sensor and a DRV8833 motor driver.
+
 import board
 import time
 import busio
