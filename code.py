@@ -33,11 +33,13 @@ tof = adafruit_vl53l0x.VL53L0X(i2c)
 while True:
     # turn right when 50mm or less from an obstacle
     while tof.range <= 50:
+        print(tof.range)
         leftmotor.throttle = 0.5
         rightmotor.throttle = -0.5
         time.sleep(0.5)
     # drive straight forward when greater than 50mm from an obstacle
     else:
+        print(tof.range)
         leftmotor.throttle = 0.5
         rightmotor.throttle = 0.5
         time.sleep(0.1)
