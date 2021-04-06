@@ -1,4 +1,5 @@
-#this is designed to run on an adafruit QT Py board running Circuit Python 6.1.0, using a VL53L0X ToF sensor and a DRV8833 motor driver.
+# this is designed to run on an adafruit QT Py board running Circuit Python 6.1.0
+# using a VL53L0X ToF sensor and a DRV8833 motor driver.
 
 import board
 import time
@@ -30,5 +31,13 @@ i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
 while True:
-    print(tof.range)
-    time.sleep(1)
+    # turn right when 50mm or less from an obstacle
+    while tof.range <= 50:
+        leftmotor.throttle = 0.5
+        rightmotor.throttle = -0.5
+        time.sleep(0.5)
+    # drive straight forward when greater than 50mm from an obstacle
+    else:
+        leftmotor.throttle = 0.5
+        rightmotor.throttle = 0.5
+        time.sleep(0.1)
