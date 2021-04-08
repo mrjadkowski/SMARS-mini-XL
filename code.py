@@ -43,13 +43,13 @@ while True:
         time.sleep(.5)
     # if run is true, then drive
     if run:
-        # turn right when 100mm or less from an obstacle, until 150mm or less from an obstacle
+        # turn right ~100 degrees when 100mm or less from an obstacle, until 150mm or less from an obstacle
         while tof.range <= 100:
             while tof.range <= 150:
                 print(tof.range)
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
-                time.sleep(0.1)
+                time.sleep(2.5)
         # drive straight forward when greater than 50mm from an obstacle
         else:
             print(tof.range)
