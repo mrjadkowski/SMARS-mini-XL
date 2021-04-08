@@ -6,6 +6,7 @@ import time
 import busio
 import adafruit_vl53l0x
 import pwmio
+import touchio
 from adafruit_motor import motor
 
 # set up PWM pins for left motor
@@ -30,17 +31,32 @@ rightmotor = motor.DCMotor(pwm_c, pwm_d)
 i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
+# setup touch input
+touch = touchio.TouchIn(board.D6)
+
+run = False
+
 while True:
-    # turn right when 50mm or less from an obstacle, until 80mm or less from an obstacle
-    while tof.range <= 50:
-        while tof.range <= 80:
+    # invert run value when touched
+    if touch.value:
+        run = ~run
+        time.sleep(.5)
+    # if run is true, then drive
+    if run:
+        # turn right when 100mm or less from an obstacle, until 150mm or less from an obstacle
+        while tof.range <= 100:
+            while tof.range <= 150:
+                print(tof.range)
+                leftmotor.throttle = 0.5
+                rightmotor.throttle = -0.5
+                time.sleep(0.1)
+        # drive straight forward when greater than 50mm from an obstacle
+        else:
             print(tof.range)
             leftmotor.throttle = 0.5
-            rightmotor.throttle = -0.5
+            rightmotor.throttle = 0.5
             time.sleep(0.1)
-    # drive straight forward when greater than 50mm from an obstacle
+    #if run is false, shut off motors
     else:
-        print(tof.range)
-        leftmotor.throttle = 0.5
-        rightmotor.throttle = 0.5
-        time.sleep(0.1)
+        leftmotor.throttle = 0
+        rightmotor.throttle = 0
