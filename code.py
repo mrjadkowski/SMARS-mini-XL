@@ -39,12 +39,18 @@ touch_debounced = Debouncer(touch)
 # set up turn and drive parameters
 start_turn_distance = 100
 stop_turn_distance = 150
-turn_time = 2.5
+turn_time = 2
 abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
 run_flag = False
 
+# set up stuck decetion
+stuck_iterator = 0
+stuck_counter = 0
+stuck_range = tof.range
+stuck_variance = 5
+stuck_flag = False
 
 while True:
     now = time.monotonic()
@@ -55,8 +61,30 @@ while True:
     if touch_debounced.rose:
         run_flag = ~run_flag
 
+    # if stuck, stop driving and reset stuck flag
+    if stuck_flag:
+        run_flag = False
+        stuck_flag = False
+
     # if run_flag is true, then drive
     if run_flag:
+        # detect when stuck and set stuck_flag to True
+        stuck_iterator += 1
+        if stuck_iterator >= 50:
+            stuck_iterator = 0
+            stuck_range = tof.range
+            print(stuck_range)
+            print(stuck_counter)
+        if stuck_iterator == 49:
+            if tof.range <= stuck_range + stuck_variance or tof.range >= stuck_range - stuck_variance:
+                stuck_counter += 1
+                print("TOF range:", tof.range)
+                print("stuck_range: ", stuck_range)
+                # print(stuck_counter)
+                # print(stuck_flag)
+        if stuck_counter >= 5:
+            stuck_flag = True
+            stuck_counter = 0
 
         # when start_turn_distance or less from an obstacle, start turning right
         if tof.range <= start_turn_distance:
@@ -82,8 +110,9 @@ while True:
             rightmotor.throttle = 0.5
             start_turn_time = now
 
-    # if run is false, shut off motors and set turn_flag to False
+    # if run is false, shut off motors and set turn_flag and stuck_flag to False
     else:
         leftmotor.throttle = 0
         rightmotor.throttle = 0
         turn_flag = False
+        stuck_flag = False
