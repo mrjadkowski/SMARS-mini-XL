@@ -7,6 +7,7 @@ import busio
 import adafruit_vl53l0x
 import pwmio
 import touchio
+from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
 
 # set up PWM pins for left motor
@@ -32,31 +33,52 @@ i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
 # setup touch input
-touch = touchio.TouchIn(board.D6)
-
+touch_pin = board.D6
+touch = touchio.TouchIn(touch_pin)
+touch_debounced = Debouncer(touch)
 run = False
 
+# set up turn and drive parameters
+start_turn_distance = 100
+stop_turn_distance = 150
+turn_time = 2.5
+abort_turn_time = 5
+start_turn_time = -1
+turn_flag = False
+
+
 while True:
+    now = time.monotonic()
+    # print(tof.range)
+
     # invert run value when touched
-    if touch.value:
+    touch_debounced.update()
+    if touch_debounced.rose:
         run = ~run
-        time.sleep(.5)
+
     # if run is true, then drive
     if run:
-        # turn right ~100 degrees when 100mm or less from an obstacle, until 150mm or less from an obstacle
-        while tof.range <= 100:
-            while tof.range <= 150:
-                print(tof.range)
+        # when start_turn_distance or less from an obstacle, turn right for turn_time or until stop_turn_distance or more from an obstacle
+        # or abort_turn_time has elapsed
+        if tof.range <= start_turn_distance:
+            turn_flag = True
+        if turn_flag:
+            if tof.range < stop_turn_distance or now <= start_turn_time + turn_time:
+                now = time.monotonic()
+                # if now > start_turn_time + abort_turn_time: break
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
-                time.sleep(2.5)
-        # drive straight forward when greater than 50mm from an obstacle
+            else:
+                turn_flag = False
+
+        # drive straight forward when greater than start_turn_distance from an obstacle
         else:
-            print(tof.range)
             leftmotor.throttle = 0.5
             rightmotor.throttle = 0.5
-            time.sleep(0.1)
-    #if run is false, shut off motors
+            start_turn_time = now
+
+    # if run is false, shut off motors and set turn_flag to False
     else:
         leftmotor.throttle = 0
         rightmotor.throttle = 0
+        turn_flag = False
