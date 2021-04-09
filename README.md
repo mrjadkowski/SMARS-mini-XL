@@ -6,6 +6,9 @@ This repository has the code for the SMARS mini XL. Currently the code is design
 
 See the Fritzing diagram for wiring
 
-See the code for the current required libraries; at the moment it requires adafruit_vl53l0x and adafruit_motor
+See the code for the current required libraries; at the moment it requires:
+adafruit_vl53l0x
+adafruit_motor
+adafruit_debouncer
 
 Once they are available I will update the code to run on an Adafruit Feather RP2040, which the chassis is designed for.
