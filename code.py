@@ -33,10 +33,8 @@ i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
 # setup touch input
-touch_pin = board.D6
-touch = touchio.TouchIn(touch_pin)
+touch = touchio.TouchIn(board.D6)
 touch_debounced = Debouncer(touch)
-run = False
 
 # set up turn and drive parameters
 start_turn_distance = 100
@@ -45,6 +43,7 @@ turn_time = 2.5
 abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
+run_flag = False
 
 
 while True:
@@ -54,20 +53,26 @@ while True:
     # invert run value when touched
     touch_debounced.update()
     if touch_debounced.rose:
-        run = ~run
+        run_flag = ~run_flag
 
-    # if run is true, then drive
-    if run:
-        # when start_turn_distance or less from an obstacle, turn right for turn_time or until stop_turn_distance or more from an obstacle
-        # or abort_turn_time has elapsed
+    # if run_flag is true, then drive
+    if run_flag:
+
+        # when start_turn_distance or less from an obstacle, start turning right
         if tof.range <= start_turn_distance:
             turn_flag = True
         if turn_flag:
-            if tof.range < stop_turn_distance or now <= start_turn_time + turn_time:
-                now = time.monotonic()
-                # if now > start_turn_time + abort_turn_time: break
+
+            # stop driving if attempting to turn for more than abort_turn_time
+            if now > abort_turn_time + start_turn_time:
+                run_flag = False
+
+            #turn right for turn_time or until stop_turn_distance or more from an obstacle
+            elif tof.range < stop_turn_distance or now <= start_turn_time + turn_time:
+                # now = time.monotonic()
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
+
             else:
                 turn_flag = False
 
