@@ -49,12 +49,11 @@ run_flag = False
 stuck_iterator = 0
 stuck_counter = 0
 stuck_range = tof.range
-stuck_variance = 50
+stuck_variance = 15
 stuck_flag = False
 
 while True:
     now = time.monotonic()
-    # print(tof.range)
 
     # invert run value when touched
     touch_debounced.update()
@@ -71,6 +70,7 @@ while True:
         # when start_turn_distance or less from an obstacle, start turning right
         if tof.range <= start_turn_distance:
             turn_flag = True
+
         if turn_flag:
 
             # stop driving if attempting to turn for more than abort_turn_time
@@ -92,25 +92,22 @@ while True:
             rightmotor.throttle = 0.5
             start_turn_time = now
 
-            # detect when stuck and set stuck_flag to True
-            stuck_iterator += 1
-            if stuck_iterator >= 50:
-                stuck_iterator = 0
-                stuck_range = tof.range
-                # print(stuck_range)
-                # print(stuck_counter)
-            if stuck_iterator == 49:
+            # forward stuck logic
+            # perform stuck check once a second
+            if now >= stuck_iterator + 1:
+                stuck_iterator = now
+                # reset stuck_counter if not stuck
                 if tof.range < stuck_range - stuck_variance:
                     stuck_counter = 0
+                # increment stuck_counter if stuck
                 if tof.range >= stuck_range - stuck_variance and tof.range < 8190:
                     stuck_counter += 1
-                    # print("TOF range:", tof.range)
-                    # print("stuck_range: ", stuck_range)
-                    # print(stuck_counter)
-                    # print(stuck_flag)
-            if stuck_counter >= 5:
-                stuck_flag = True
-                stuck_counter = 0
+                # reset stuck_range for next check
+                stuck_range = tof.range
+                # set stuck_flag to True if stuck for five consecutive seconds
+                if stuck_counter >= 5:
+                    stuck_flag = True
+                    stuck_counter = 0
 
     # if run is false, shut off motors and set turn_flag and stuck_flag to False
     else:
