@@ -49,7 +49,7 @@ run_flag = False
 stuck_iterator = 0
 stuck_counter = 0
 stuck_range = tof.range
-stuck_variance = 15
+stuck_variance = 30
 stuck_flag = False
 
 while True:
@@ -93,8 +93,8 @@ while True:
             start_turn_time = now
 
             # forward stuck logic
-            # perform stuck check once a second
-            if now >= stuck_iterator + 1:
+            # perform stuck check once every two seconds
+            if now >= stuck_iterator + 2:
                 stuck_iterator = now
                 # reset stuck_counter if not stuck
                 if tof.range < stuck_range - stuck_variance:
