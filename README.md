@@ -7,8 +7,18 @@ This repository has the code for the SMARS mini XL. Currently the code is design
 See the Fritzing diagram for wiring
 
 See the code for the current required libraries; at the moment it requires:
-adafruit_vl53l0x
-adafruit_motor
-adafruit_debouncer
 
-Once they are available I will update the code to run on an Adafruit Feather RP2040, which the chassis is designed for.
+  -  adafruit_vl53l0x
+  - adafruit_motor
+  - adafruit_debouncer
+
+The following parameters can be changed in the setup section of the code to alter the behavior:
+
+Turning parameters:
+  - start_turn_distance: the distance from an obstacle that the robot will stop and begin to pivot right
+  - turn_time = the amount of time the robot will pivot to the right once started
+  - stop_turn_distance: the distance from an obstacle that the robot will stop pivoting and start driving forward again, assuming turn_time has elapsed
+  - abort_turn_time: if the robot has not reached stop_turn_distance in this amount of time while pivoting, it will stop trying to drive
+
+Obstacle detection parameters:
+  - stuck_variance: if the robot moves less than this distance in ~2.5 seconds, a stuck_counter event is recorded. After five consecutive stuck_counter events, the robot will stop trying to drive.
