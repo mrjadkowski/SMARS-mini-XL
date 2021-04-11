@@ -25,4 +25,4 @@ Turning parameters:
   - abort_turn_time: if the robot has not reached stop_turn_distance in this amount of time while pivoting, it will stop trying to drive
 
 Obstacle detection parameters:
-  - stuck_variance: if the robot moves less than this distance in ~2.5 seconds, a stuck_counter event is recorded. After five consecutive stuck_counter events, the robot will stop trying to drive.
+  - stuck_variance: if the robot moves less than this distance in 1 second, a stuck_counter event is recorded.
