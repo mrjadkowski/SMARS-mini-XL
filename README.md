@@ -26,3 +26,7 @@ Turning parameters:
 
 Obstacle detection parameters:
   - stuck_variance: if the robot moves less than this distance in 1 second, a stuck_counter event is recorded.
+
+### Upcoming planned releases:
+  - 2.0.0: Wiring and code update to have the same functionality as 1.x.x, but using an Adafruit Feather RP2040 instead of a QT Py and Trinket backpack.
+  - 3.0.0: Addition of solar charging, light-seeking behavior, and sleep logic to the 2.0.0 driving behavior. The end goal is to allow the robot to run perpetually, always trying to keep the battery charged as much as possible.
