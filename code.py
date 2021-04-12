@@ -39,17 +39,19 @@ touch_debounced = Debouncer(touch)
 # set up turn and drive parameters
 start_turn_distance = 100
 stop_turn_distance = 150
-turn_time = 2
+turn_time = 1.5
 abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
 run_flag = False
 
 # set up stuck decetion
-stuck_iterator = 0
+stuck_check_last = 0
+stuck_timer = 0
 stuck_counter = 0
+stuck_sequential_counter = 0
 stuck_range = tof.range
-stuck_variance = 30
+stuck_variance = 20
 stuck_flag = False
 
 while True:
@@ -60,22 +62,39 @@ while True:
     if touch_debounced.rose:
         run_flag = ~run_flag
 
-    # if stuck, stop driving and reset stuck flag
-    if stuck_flag:
+    # when start_turn_distance or less from an obstacle, set turn flag
+    if tof.range <= start_turn_distance:
+        turn_flag = True
+
+    # if stuck for more than 20 seconds, stop driving
+    if stuck_sequential_counter >= 3:
         run_flag = False
-        stuck_flag = False
 
     # if run_flag is true, then drive
     if run_flag:
-        # when start_turn_distance or less from an obstacle, start turning right
-        if tof.range <= start_turn_distance:
-            turn_flag = True
+        if stuck_flag:
+            # back up for one seconds
+            if now <= stuck_timer + 1.0:
+                leftmotor.throttle = -0.5
+                rightmotor.throttle = -0.5
 
-        if turn_flag:
+            # turn left for two seconds
+            elif now <= stuck_timer + 3.0:
+                leftmotor.throttle = -0.5
+                rightmotor.throttle = 0.5
 
-            # stop driving if attempting to turn for more than abort_turn_time
+            # go back to driving
+            else:
+                stuck_flag = False
+                start_turn_time = now
+                stuck_counter = 0
+
+        elif turn_flag:
+            # set stuck_flag if attempting to turn for more than abort_turn_time
             if now > abort_turn_time + start_turn_time:
-                run_flag = False
+                stuck_flag = True
+                stuck_timer = now
+                turn_flag = False
 
             # turn right for turn_time or until stop_turn_distance or more from an obstacle
             elif tof.range < stop_turn_distance or now <= start_turn_time + turn_time:
@@ -85,6 +104,7 @@ while True:
 
             else:
                 turn_flag = False
+                start_turn_time = now
 
         # drive straight forward when greater than start_turn_distance from an obstacle
         else:
@@ -94,24 +114,32 @@ while True:
 
             # forward stuck logic
             # perform stuck check once every two seconds
-            if now >= stuck_iterator + 2:
-                stuck_iterator = now
-                # reset stuck_counter if not stuck
+            if now >= stuck_check_last + 1:
+                stuck_check_last = now
+
+                # reset stuck_counter and stuck_sequential_counter if not stuck
                 if tof.range < stuck_range - stuck_variance:
                     stuck_counter = 0
+                    stuck_sequential_counter = 0
+
                 # increment stuck_counter if stuck
                 if tof.range >= stuck_range - stuck_variance and tof.range < 8190:
                     stuck_counter += 1
+
                 # reset stuck_range for next check
                 stuck_range = tof.range
-                # set stuck_flag to True if stuck for five consecutive seconds
-                if stuck_counter >= 5:
-                    stuck_flag = True
-                    stuck_counter = 0
 
-    # if run is false, shut off motors and set turn_flag and stuck_flag to False
+                # set stuck_flag to True if stuck for seven consecutive seconds, increment stuck_sequential_counter
+                if stuck_counter >= 7:
+                    stuck_flag = True
+                    stuck_sequential_counter += 1
+                    stuck_timer = now
+
+    # if run_flag is false, shut off motors and reset flags
     else:
         leftmotor.throttle = 0
         rightmotor.throttle = 0
         turn_flag = False
         stuck_flag = False
+        stuck_counter = 0
+        stuck_sequential_counter = 0
