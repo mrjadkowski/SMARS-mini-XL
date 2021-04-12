@@ -72,7 +72,6 @@ while True:
 
     # if run_flag is true, then drive
     if run_flag:
-        # print(tof.range)
         if stuck_flag:
             # back up for one seconds
             if now <= stuck_timer + 1.0:
@@ -117,19 +116,20 @@ while True:
             # perform stuck check once every two seconds
             if now >= stuck_check_last + 1:
                 stuck_check_last = now
-                # reset stuck_counter if not stuck
+
+                # reset stuck_counter and stuck_sequential_counter if not stuck
                 if tof.range < stuck_range - stuck_variance:
                     stuck_counter = 0
                     stuck_sequential_counter = 0
+
                 # increment stuck_counter if stuck
                 if tof.range >= stuck_range - stuck_variance and tof.range < 8190:
                     stuck_counter += 1
-                    # print("stuck counter is: ", stuck_counter)
-                    # print("stuck_range is: ", stuck_range)
-                    # print("tof.range is: ", tof.range)
+
                 # reset stuck_range for next check
                 stuck_range = tof.range
-                # set stuck_flag to True if stuck for five consecutive seconds, increment stuck_sequential_counter
+
+                # set stuck_flag to True if stuck for seven consecutive seconds, increment stuck_sequential_counter
                 if stuck_counter >= 7:
                     stuck_flag = True
                     stuck_sequential_counter += 1
