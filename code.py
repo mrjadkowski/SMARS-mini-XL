@@ -86,6 +86,7 @@ while True:
             # go back to driving
             else:
                 stuck_flag = False
+                turn_flag = False
                 start_turn_time = now
                 stuck_counter = 0
 
