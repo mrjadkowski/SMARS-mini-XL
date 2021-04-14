@@ -2,7 +2,7 @@
 A small wheeled or tracked robot running on Circuit Python
 
 
-.STL and .STEP files are available at: https://www.thingiverse.com/thing:4810626
+.STL and .STEP files are available in the CAD files folder and at: https://www.thingiverse.com/thing:4810626
 
 Current hardware BOM: https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
 
