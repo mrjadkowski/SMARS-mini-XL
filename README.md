@@ -22,8 +22,7 @@ Turning parameters:
   - start_turn_distance: the distance from an obstacle that the robot will stop and begin to pivot right
   - turn_time: the amount of time the robot will pivot to the right once started
   - stop_turn_distance: the distance from an obstacle that the robot will stop pivoting and start driving forward again, assuming turn_time has elapsed
-  - abort_turn_time: if the robot has not reached stop_turn_distance in this amount of time while pivoting, it will stop trying to drive
-
+  - abort_turn_time: if the robot has not reached stop_turn_distance in this amount of time while pivoting, it will attempt an unstuck maneuver
 Obstacle detection parameters:
   - stuck_variance: if the robot moves less than this distance in 1 second, a stuck_counter event is recorded.
 
