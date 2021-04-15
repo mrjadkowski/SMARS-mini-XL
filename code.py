@@ -6,17 +6,18 @@ import time
 import busio
 import adafruit_vl53l0x
 import pwmio
+import neopixel
 from digitalio import DigitalInOut, Direction
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
 
 # set up PWM pins for left motor
-PWM_PIN_A = board.D13 # yellow wire
-PWM_PIN_B = board.D12 # green wire
+PWM_PIN_A = board.D13  # yellow wire
+PWM_PIN_B = board.D12  # green wire
 
 # set up PWM pins for right motor
-PWM_PIN_C = board.D11 # white wire
-PWM_PIN_D = board.D10 # blue wire
+PWM_PIN_C = board.D11  # white wire
+PWM_PIN_D = board.D10  # blue wire
 
 # set up left motor
 pwm_a = pwmio.PWMOut(PWM_PIN_A, frequency=50)
@@ -32,9 +33,13 @@ rightmotor = motor.DCMotor(pwm_c, pwm_d)
 i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
+# initialize NeoPixel
+neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
+
 # setup switch input
 switch = DigitalInOut(board.D24)
 switch.direction = Direction.INPUT
+switch_debounced = Debouncer(switch)
 
 # set up turn and drive parameters
 start_turn_distance = 100
@@ -57,8 +62,9 @@ stuck_flag = False
 while True:
     now = time.monotonic()
 
-    # invert run value when touched
-    run_flag = switch.value
+    # set run_flag to switch value
+    switch_debounced.update()
+    run_flag = switch_debounced.value
 
     # when start_turn_distance or less from an obstacle, set turn flag
     if tof.range <= start_turn_distance:
@@ -70,6 +76,7 @@ while True:
 
     # if run_flag is true, then drive
     if run_flag:
+
         if stuck_flag:
             # back up for one seconds
             if now <= stuck_timer + 1.0:
@@ -89,6 +96,7 @@ while True:
                 stuck_counter = 0
 
         elif turn_flag:
+            neopixel.fill((20, 0, 0))
             # set stuck_flag if attempting to turn for more than abort_turn_time
             if now > abort_turn_time + start_turn_time:
                 stuck_flag = True
@@ -107,6 +115,7 @@ while True:
 
         # drive straight forward when greater than start_turn_distance from an obstacle
         else:
+            neopixel.fill((0, 20, 0))
             leftmotor.throttle = 0.5
             rightmotor.throttle = 0.5
             start_turn_time = now
@@ -136,6 +145,7 @@ while True:
 
     # if run_flag is false, shut off motors and reset flags
     else:
+        neopixel.fill((0, 0, 0))
         leftmotor.throttle = 0
         rightmotor.throttle = 0
         turn_flag = False
