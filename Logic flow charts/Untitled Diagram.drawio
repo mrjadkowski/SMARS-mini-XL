@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-04-15T11:42:53.940Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="4x2ZV2KYDyZb-F9fJU5r" version="14.5.10" type="github">
+<mxfile host="app.diagrams.net" modified="2021-04-15T11:48:30.525Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36" etag="4CZE6H0cWfHiJjwH16oR" version="14.5.10" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1422" dy="1931" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -19,11 +19,50 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="jvDP5jBHSejzYiG8BgBr-5" value="&lt;font style=&quot;font-size: 10px&quot;&gt;Is tof.range &amp;lt;&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="330" y="-880" width="80" height="80" as="geometry" />
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-10" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-5" target="jvDP5jBHSejzYiG8BgBr-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-14" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-5" target="jvDP5jBHSejzYiG8BgBr-11">
+          <mxGeometry x="-0.8356" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="-815" />
+              <mxPoint x="480" y="-610" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-5" value="&lt;font style=&quot;font-size: 10px&quot;&gt;Is tof.range &amp;gt; stuck_range + stuck_variance?&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="310" y="-870" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-6" target="jvDP5jBHSejzYiG8BgBr-5">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="jvDP5jBHSejzYiG8BgBr-6" value="Reset stuck_check_last" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="310" y="-970" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-9" target="jvDP5jBHSejzYiG8BgBr-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-9" value="Not stuck, reset stuck counters" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="310" y="-720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-17" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-11" target="jvDP5jBHSejzYiG8BgBr-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-11" value="Is tof.range &amp;lt; stuck_range + stuck_variance?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="310" y="-610" width="120" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-15" value="Stuck, increment stuck_counter +1" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="310" y="-340" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-18" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="jvDP5jBHSejzYiG8BgBr-16" target="jvDP5jBHSejzYiG8BgBr-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-16" value="Is tof.range &amp;lt; 8190?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="330" y="-450" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="jvDP5jBHSejzYiG8BgBr-19" value="Reset stuck_range for next stuck check" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="310" y="-230" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
