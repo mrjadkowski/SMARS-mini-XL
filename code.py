@@ -62,22 +62,28 @@ stuck_flag = False
 while True:
     now = time.monotonic()
 
-    # set run_flag to switch value
+    # set run_flag to true if switch was switched on
     switch_debounced.update()
-    run_flag = switch_debounced.value
+    if switch_debounced.rose:
+        run_flag = True
+    # set run_flag to false of switch was switched off
+    if switch_debounced.fell:
+        run_flag = False
+        neopixel.fill((0, 0, 0))
 
     # when start_turn_distance or less from an obstacle, set turn flag
     if tof.range <= start_turn_distance:
         turn_flag = True
 
-    # if stuck for more than 20 seconds, stop driving
-    if stuck_sequential_counter >= 3:
-        run_flag = False
-
     # if run_flag is true, then drive
     if run_flag:
+            # if stuck for more than 20 seconds, stop driving
+        if stuck_sequential_counter >= 3:
+            run_flag = False
+            neopixel.fill((255, 255, 255))
 
-        if stuck_flag:
+        elif stuck_flag:
+            neopixel.fill((0, 0, 10))
             # back up for one seconds
             if now <= stuck_timer + 1.0:
                 leftmotor.throttle = -0.5
@@ -94,9 +100,10 @@ while True:
                 turn_flag = False
                 start_turn_time = now
                 stuck_counter = 0
+                stuck_sequential_counter += 1
 
         elif turn_flag:
-            neopixel.fill((20, 0, 0))
+            neopixel.fill((10, 0, 0))
             # set stuck_flag if attempting to turn for more than abort_turn_time
             if now > abort_turn_time + start_turn_time:
                 stuck_flag = True
@@ -115,7 +122,7 @@ while True:
 
         # drive straight forward when greater than start_turn_distance from an obstacle
         else:
-            neopixel.fill((0, 20, 0))
+            neopixel.fill((0, 10, 0))
             leftmotor.throttle = 0.5
             rightmotor.throttle = 0.5
             start_turn_time = now
@@ -140,12 +147,10 @@ while True:
                 # set stuck_flag to True if stuck for seven consecutive seconds, increment stuck_sequential_counter
                 if stuck_counter >= 7:
                     stuck_flag = True
-                    stuck_sequential_counter += 1
                     stuck_timer = now
 
     # if run_flag is false, shut off motors and reset flags
     else:
-        neopixel.fill((0, 0, 0))
         leftmotor.throttle = 0
         rightmotor.throttle = 0
         turn_flag = False
