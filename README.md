@@ -1,7 +1,7 @@
 # SMARS-mini-XL
 A small wheeled or tracked robot running on Circuit Python
 
-![handheld picture](https://github.com/mrjadkowski/SMARS-mini-XL/blob/main/Media/handheld.jpg?raw=true)
+![handheld](https://user-images.githubusercontent.com/81754963/114968954-60450480-9e45-11eb-84ad-c70d481d8c64.jpg)
 
 .STL and .STEP files are available in the CAD files folder (probably the most current) and at: https://www.thingiverse.com/thing:4810626
 
