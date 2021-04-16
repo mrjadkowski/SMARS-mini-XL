@@ -128,7 +128,7 @@ while True:
             start_turn_time = now
 
             # forward stuck logic
-            # perform stuck check once every two seconds
+            # perform stuck check once every second
             if now >= stuck_check_last + 1:
                 stuck_check_last = now
 
