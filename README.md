@@ -1,19 +1,21 @@
 # SMARS-mini-XL
 A small wheeled or tracked robot running on Circuit Python
 
-![handheld picture](https://github.com/mrjadkowski/SMARS-mini-XL/blob/RP2040/Media/handheld.jpg?raw=true)
+![handheld picture](https://github.com/mrjadkowski/SMARS-mini-XL/blob/main/Media/handheld.jpg?raw=true)
 
 .STL and .STEP files are available in the CAD files folder (probably the most current) and at: https://www.thingiverse.com/thing:4810626
 
 Current hardware BOM: https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
+Current code is running on the 2.x.x hardware setup. For the QT Py version, see the 1.1.0 release
 
-This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.1.0 running on an Adafruit QT Py. It uses a VL53L0X time-of-flight sensor connected with i2c, and a DRV8833 h-bridge motor driver. There is also an optional lipo power and charging circuit using an Adafruit Pro Trinket backpack, a SPST switch, and a power diode. This allows the lipo to charge from the QT Py USB connector, or power the robot when the USB is unplugged, depending on the switch position.
-
+This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor connected with i2c, am DRV8833 h-bridge motor driver, a small lipo, and a SPST switch.
 See the Fritzing diagram for wiring
 
 See the code for the current required libraries; at the moment it requires:
 
-  -  adafruit_vl53l0x
+  - adafruit_bus_device
+  - adafruit_vl53l0x
+  - adafruit_neopixel
   - adafruit_motor
   - adafruit_debouncer
 
@@ -27,6 +29,11 @@ Turning parameters:
 Obstacle detection parameters:
   - stuck_variance: if the robot moves less than this distance in 1 second, a stuck_counter event is recorded.
 
+2.0.0 uses the NeoPixel to show different states. The color codes are:
+  - Green: driving forward
+  - Red: obstacle detected and turning
+  - Blue: stuck event detected, performing unstuck maneuver
+  - Bright white: three consecutive unstuck maneuvers have failed
+
 ### Upcoming planned releases:
-  - 2.0.0: Wiring and code update to have the same functionality as 1.x.x, but using an Adafruit Feather RP2040 instead of a QT Py and Trinket backpack.
   - 3.0.0: Addition of solar charging, light-seeking behavior, and sleep logic to the 2.0.0 driving behavior. The end goal is to allow the robot to run perpetually, always trying to keep the battery charged as much as possible.
