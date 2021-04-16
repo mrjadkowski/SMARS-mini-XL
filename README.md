@@ -21,7 +21,6 @@ See the code for the current required libraries; at the moment it requires:
 
 The following parameters can be changed in the setup section of the code to alter the behavior:
 
-Turning parameters:
   - start_turn_distance: the distance from an obstacle that the robot will stop and begin to pivot right
   - turn_time: the amount of time the robot will pivot to the right once started
   - stop_turn_distance: the distance from an obstacle that the robot will stop pivoting and start driving forward again, assuming turn_time has elapsed
