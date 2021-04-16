@@ -8,7 +8,7 @@ A small wheeled or tracked robot running on Circuit Python
 Current hardware BOM: https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
 Current code is running on the 2.x.x hardware setup. For the QT Py version, see the 1.1.0 release
 
-This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor connected with i2c, am DRV8833 h-bridge motor driver, a small lipo, and a SPST switch.
+This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch.
 See the Fritzing diagram for wiring
 
 See the code for the current required libraries; at the moment it requires:
