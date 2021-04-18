@@ -1,10 +1,11 @@
 # this is designed to run on an adafruit Feather RP2040 board running Circuit Python 6.2.0
-# using a VL53L0X ToF sensor and a DRV8833 motor driver.
+# using a VL53L0X ToF sensor, APDS-9960 proximity sensor, and a DRV8833 motor driver.
 
 import board
 import time
 import busio
 import adafruit_vl53l0x
+from adafruit_apds9960.apds9960 import APDS9960
 import pwmio
 import neopixel
 from digitalio import DigitalInOut, Direction
@@ -12,12 +13,12 @@ from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
 
 # set up PWM pins for left motor
-PWM_PIN_A = board.D13  # yellow wire
-PWM_PIN_B = board.D12  # green wire
+PWM_PIN_A = board.D12  # yellow wire
+PWM_PIN_B = board.D11  # green wire
 
 # set up PWM pins for right motor
-PWM_PIN_C = board.D11  # white wire
-PWM_PIN_D = board.D10  # blue wire
+PWM_PIN_C = board.D10  # white wire
+PWM_PIN_D = board.D9  # blue wire
 
 # set up left motor
 pwm_a = pwmio.PWMOut(PWM_PIN_A, frequency=50)
@@ -33,6 +34,12 @@ rightmotor = motor.DCMotor(pwm_c, pwm_d)
 i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
+# initialize APDS-9960
+apds = APDS9960(i2c)
+apds.enable_proximity = True
+apds.enable_gesture = True
+apds.gesture_proximity_threshold = 255
+
 # initialize NeoPixel
 neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
 
@@ -42,8 +49,8 @@ switch.direction = Direction.INPUT
 switch_debounced = Debouncer(switch)
 
 # set up turn and drive parameters
-start_turn_distance = 100
-stop_turn_distance = 150
+start_turn_distance = 5
+stop_turn_distance = 2
 turn_time = 1.5
 abort_turn_time = 5
 start_turn_time = -1
@@ -72,12 +79,12 @@ while True:
         neopixel.fill((0, 0, 0))
 
     # when start_turn_distance or less from an obstacle, set turn flag
-    if tof.range <= start_turn_distance:
+    if apds.proximity >= start_turn_distance:
         turn_flag = True
 
     # if run_flag is true, then drive
     if run_flag:
-            # if stuck for more than 20 seconds, stop driving
+        # if stuck for more than 20 seconds, stop driving
         if stuck_sequential_counter >= 3:
             run_flag = False
             neopixel.fill((255, 255, 255))
@@ -111,7 +118,7 @@ while True:
                 turn_flag = False
 
             # turn right for turn_time or until stop_turn_distance or more from an obstacle
-            elif tof.range < stop_turn_distance or now <= start_turn_time + turn_time:
+            elif apds.proximity > stop_turn_distance or now <= start_turn_time + turn_time:
                 # now = time.monotonic()
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
@@ -133,12 +140,12 @@ while True:
                 stuck_check_last = now
 
                 # reset stuck_counter and stuck_sequential_counter if not stuck
-                if tof.range < stuck_range - stuck_variance:
+                if tof.range > stuck_range + stuck_variance:
                     stuck_counter = 0
                     stuck_sequential_counter = 0
 
                 # increment stuck_counter if stuck
-                if tof.range >= stuck_range - stuck_variance and tof.range < 8190:
+                if tof.range <= stuck_range + stuck_variance and tof.range < 8190:
                     stuck_counter += 1
 
                 # reset stuck_range for next check
