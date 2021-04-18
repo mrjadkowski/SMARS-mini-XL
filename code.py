@@ -145,7 +145,7 @@ while True:
                     stuck_sequential_counter = 0
 
                 # increment stuck_counter if stuck
-                if tof.range <= stuck_range + stuck_variance and tof.range < 8190:
+                if tof.range <= stuck_range + stuck_variance and tof.range < 8000:
                     stuck_counter += 1
 
                 # reset stuck_range for next check
