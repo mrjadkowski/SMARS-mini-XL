@@ -38,6 +38,7 @@ tof = adafruit_vl53l0x.VL53L0X(i2c)
 apds = APDS9960(i2c)
 apds.enable_proximity = True
 apds.enable_gesture = True
+apds.enable_color = True
 apds.gesture_proximity_threshold = 255
 
 # initialize NeoPixel
@@ -56,6 +57,7 @@ abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
 run_flag = False
+turn_right_flag = True
 
 # set up stuck decetion
 stuck_check_last = 0
@@ -66,8 +68,15 @@ stuck_range = tof.range
 stuck_variance = 20
 stuck_flag = False
 
+# set up light check
+last_c = 0
+light_check_last = 0
+
 while True:
     now = time.monotonic()
+
+    # update light data
+    r, g, b, c = apds.color_data
 
     # set run_flag to true if switch was switched on
     switch_debounced.update()
@@ -111,6 +120,7 @@ while True:
 
         elif turn_flag:
             neopixel.fill((10, 0, 0))
+
             # set stuck_flag if attempting to turn for more than abort_turn_time
             if now > abort_turn_time + start_turn_time:
                 stuck_flag = True
@@ -119,20 +129,39 @@ while True:
 
             # turn right for turn_time or until stop_turn_distance or more from an obstacle
             elif apds.proximity > stop_turn_distance or now <= start_turn_time + turn_time:
-                # now = time.monotonic()
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
 
             else:
                 turn_flag = False
+                print(turn_right_flag)
+                turn_right_flag = not turn_right_flag
+                last_c = 0
                 start_turn_time = now
 
         # drive straight forward when greater than start_turn_distance from an obstacle
         else:
             neopixel.fill((0, 10, 0))
-            leftmotor.throttle = 0.5
-            rightmotor.throttle = 0.5
-            start_turn_time = now
+            # leftmotor.throttle = 0.5
+            # rightmotor.throttle = 0.5
+            # start_turn_time = now
+
+            # light check turn
+            if now >= light_check_last + 5:
+                print("c: ", c)
+                print("last_c: ", last_c)
+                if c >= last_c:
+                    print("light check true!")
+                    if turn_right_flag:
+                        leftmotor.throttle = 0.5
+                        rightmotor.throttle = -0.5
+                    else:
+                        leftmotor.throttle = -0.5
+                        rightmotor.throttle = 0.5
+                else:
+                    print("light check false!")
+                    light_check_last = now
+                last_c = c
 
             # forward stuck logic
             # perform stuck check once every second
@@ -148,6 +177,9 @@ while True:
                 if tof.range <= stuck_range + stuck_variance and tof.range < 8000:
                     stuck_counter += 1
 
+                # print("ToF Range: ", tof.range)
+                # print("stuck range: ", stuck_range)
+
                 # reset stuck_range for next check
                 stuck_range = tof.range
 
@@ -155,6 +187,11 @@ while True:
                 if stuck_counter >= 7:
                     stuck_flag = True
                     stuck_timer = now
+
+            else:
+                leftmotor.throttle = 0.5
+                rightmotor.throttle = 0.5
+                start_turn_time = now
 
     # if run_flag is false, shut off motors and reset flags
     else:
@@ -164,3 +201,4 @@ while True:
         stuck_flag = False
         stuck_counter = 0
         stuck_sequential_counter = 0
+
