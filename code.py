@@ -65,12 +65,11 @@ stuck_timer = 0
 stuck_counter = 0
 stuck_sequential_counter = 0
 stuck_range = tof.range
-stuck_variance = 20
+stuck_variance = 10
 stuck_flag = False
 
-# set up light check
+# set up light detection
 last_c = 0
-light_check_last = 0
 
 while True:
     now = time.monotonic()
@@ -90,6 +89,9 @@ while True:
     # when start_turn_distance or less from an obstacle, set turn flag
     if apds.proximity >= start_turn_distance:
         turn_flag = True
+
+    # if c > 600:
+        run_flag = False
 
     # if run_flag is true, then drive
     if run_flag:
@@ -139,29 +141,19 @@ while True:
                 last_c = 0
                 start_turn_time = now
 
-        # drive straight forward when greater than start_turn_distance from an obstacle
+        # drive straight forward seeking light when greater than start_turn_distance from an obstacle
         else:
             neopixel.fill((0, 10, 0))
-            # leftmotor.throttle = 0.5
-            # rightmotor.throttle = 0.5
-            # start_turn_time = now
+            if c < last_c:
+                turn_right_flag = not turn_right_flag
 
-            # light check turn
-            if now >= light_check_last + 5:
-                print("c: ", c)
-                print("last_c: ", last_c)
-                if c >= last_c:
-                    print("light check true!")
-                    if turn_right_flag:
-                        leftmotor.throttle = 0.5
-                        rightmotor.throttle = -0.5
-                    else:
-                        leftmotor.throttle = -0.5
-                        rightmotor.throttle = 0.5
-                else:
-                    print("light check false!")
-                    light_check_last = now
-                last_c = c
+            if turn_right_flag:
+                leftmotor.throttle = 0.7
+                rightmotor.throttle = 0.2
+
+            if not turn_right_flag:
+                leftmotor.throttle = 0.3
+                rightmotor.throttle = 0.7
 
             # forward stuck logic
             # perform stuck check once every second
@@ -177,9 +169,6 @@ while True:
                 if tof.range <= stuck_range + stuck_variance and tof.range < 8000:
                     stuck_counter += 1
 
-                # print("ToF Range: ", tof.range)
-                # print("stuck range: ", stuck_range)
-
                 # reset stuck_range for next check
                 stuck_range = tof.range
 
@@ -188,10 +177,9 @@ while True:
                     stuck_flag = True
                     stuck_timer = now
 
-            else:
-                leftmotor.throttle = 0.5
-                rightmotor.throttle = 0.5
-                start_turn_time = now
+            start_turn_time = now
+            # if c != last_c: print(c)
+            last_c = c
 
     # if run_flag is false, shut off motors and reset flags
     else:
@@ -199,6 +187,6 @@ while True:
         rightmotor.throttle = 0
         turn_flag = False
         stuck_flag = False
+        turn_right_flag = True
         stuck_counter = 0
         stuck_sequential_counter = 0
-
