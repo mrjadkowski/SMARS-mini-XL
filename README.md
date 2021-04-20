@@ -1,7 +1,7 @@
 # SMARS-mini-XL
-A small wheeled or tracked robot running on Circuit Python
+### A small wheeled or tracked robot running on Circuit Python
 
-![handheld](https://user-images.githubusercontent.com/81754963/114968954-60450480-9e45-11eb-84ad-c70d481d8c64.jpg)
+![Stemma QT board carrier face](https://user-images.githubusercontent.com/81754963/115438428-62a7b580-a1db-11eb-8941-654ec8801648.jpg)
 
 This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor and an APDS-9960 proximity/gesture/color/light sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch. The code currently includes basic light seeking behavior while driving forward, obstacle detection and avoidance, and stuck detection that triggers an "unstuck" maneuver.
 
@@ -30,7 +30,7 @@ The following parameters can be changed in the setup section of the code to alte
   - abort_turn_time: if the robot has not reached stop_turn_distance in this amount of time while pivoting, it will attempt an unstuck maneuver
   - stuck_variance: if the robot moves less than this distance in 1 second, a stuck_counter event is recorded.
 
-2.0.0 uses the NeoPixel to show different states. The color codes are:
+The NeoPixel on the RP2040 is used to show different states. The color codes are:
   - Green: driving forward
   - Red: obstacle detected and turning
   - Blue: stuck event detected, performing unstuck maneuver
