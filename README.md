@@ -9,6 +9,8 @@ This repository has the 3D models, wiring details, and code for the SMARS mini X
 
 Current hardware BOM: https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
 
+The Media folder has a bunch of pictures and videos of various versions of the robot, including pictures of the wiring to see how things are routed.
+
 Current code is running on the 2.x.x hardware setup. For the QT Py version, see the 1.1.0 release
 
 See the Fritzing diagram for wiring.
