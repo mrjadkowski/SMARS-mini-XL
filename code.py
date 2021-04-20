@@ -38,9 +38,7 @@ tof = adafruit_vl53l0x.VL53L0X(i2c)
 # initialize APDS-9960
 apds = APDS9960(i2c)
 apds.enable_proximity = True
-apds.enable_gesture = True
 apds.enable_color = True
-apds.gesture_proximity_threshold = 255
 
 # initialize NeoPixel
 neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
@@ -163,7 +161,7 @@ while True:
                 stuck_check_last = now
 
                 # reset stuck_counter and stuck_sequential_counter if not stuck
-                if tof.range > stuck_range + stuck_variance:
+                if tof.range > stuck_range + stuck_variance or tof.range >= 8000:
                     stuck_counter = 0
                     stuck_sequential_counter = 0
 
