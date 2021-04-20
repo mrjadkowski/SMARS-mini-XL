@@ -69,13 +69,14 @@ stuck_variance = 10
 stuck_flag = False
 
 # set up light detection
-last_c = 0
+last_lux = 0
 
 while True:
     now = time.monotonic()
 
-    # update light data
+    # update light data, calcuate lux
     r, g, b, c = apds.color_data
+    lux = colorutility.calculate_lux(r, g, b)
 
     # set run_flag to true if switch was switched on
     switch_debounced.update()
@@ -144,7 +145,7 @@ while True:
         # drive straight forward seeking light when greater than start_turn_distance from an obstacle
         else:
             neopixel.fill((0, 10, 0))
-            if c < last_c:
+            if lux < last_lux:
                 turn_right_flag = not turn_right_flag
 
             if turn_right_flag:
@@ -179,7 +180,7 @@ while True:
 
             start_turn_time = now
             # if c != last_c: print(c)
-            last_c = c
+            last_lux = lux
 
     # if run_flag is false, shut off motors and reset flags
     else:
