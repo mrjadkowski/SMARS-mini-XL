@@ -3,13 +3,13 @@ A small wheeled or tracked robot running on Circuit Python
 
 ![handheld](https://user-images.githubusercontent.com/81754963/114968954-60450480-9e45-11eb-84ad-c70d481d8c64.jpg)
 
+This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor and an APDS-9960 proximity/gesture/color/light sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch. The code currently includes basic light seeking behavior while driving forward, obstacle detection and avoidance, and stuck detection that triggers an "unstuck" maneuver.
+
 .STL and .STEP files are available in the CAD files folder (probably the most current) and at: https://www.thingiverse.com/thing:4810626
 
 Current hardware BOM: https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
 
 Current code is running on the 2.x.x hardware setup. For the QT Py version, see the 1.1.0 release
-
-This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor and an APDS-9960 proximity/gesture/color/light sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch. The code currently includes basic light seeking behavior while driving forward, obstacle detection and avoidance, and stuck detection that triggers an "unstuck" maneuver.
 
 See the Fritzing diagram for wiring.
 
