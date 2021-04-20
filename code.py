@@ -5,12 +5,13 @@ import board
 import time
 import busio
 import adafruit_vl53l0x
-from adafruit_apds9960.apds9960 import APDS9960
 import pwmio
 import neopixel
 from digitalio import DigitalInOut, Direction
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
+from adafruit_apds9960.apds9960 import APDS9960
+from adafruit_apds9960 import colorutility
 
 # set up PWM pins for left motor
 PWM_PIN_A = board.D12  # yellow wire
@@ -92,7 +93,7 @@ while True:
         turn_flag = True
 
     # if c > 600:
-        run_flag = False
+        # run_flag = False
 
     # if run_flag is true, then drive
     if run_flag:
@@ -150,7 +151,7 @@ while True:
 
             if turn_right_flag:
                 leftmotor.throttle = 0.7
-                rightmotor.throttle = 0.2
+                rightmotor.throttle = 0.3
 
             if not turn_right_flag:
                 leftmotor.throttle = 0.3
