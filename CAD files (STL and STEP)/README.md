@@ -15,5 +15,5 @@ Print this face-down (tabs up). It doesn't require supports.
 #### Feather Support
 Print this right-side up (posts up). It doesn't require supports.
 #### Top Cover
-Print htis upside-down (flat-surface down). It doesn't require supports.
+Print this upside-down (flat-surface down). It doesn't require supports.
 
