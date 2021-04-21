@@ -3,7 +3,7 @@
 
 ![Stemma QT board carrier face](https://user-images.githubusercontent.com/81754963/115438428-62a7b580-a1db-11eb-8941-654ec8801648.jpg)
 
-#### I noticed that there has been a bump in traffic the last few days. I would love to have some collaborators on this project. I'm brand new to programming, brand new to CAD, brand new to GitHub, and brand new to 3D printing. About the only exiting skill I bring to this is soldering. Post an issue if you have a suggestion for a change, revise the 3D model, fork the code and improve it if you want, go crazy!
+#### I noticed that there has been a bump in traffic the last few days. I would love to have some collaborators on this project. I'm brand new to programming, brand new to CAD, brand new to GitHub, and brand new to 3D printing. About the only exiting skill I bring to this is soldering. Post an issue if you have a suggestion for a change, revise the 3D model, fork the code and improve it if you want, go crazy! I honestly have no idea what I'm doing and I know it can all be done better.
 
 This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor and an APDS-9960 proximity/gesture/color/light sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch. The code currently includes basic light seeking behavior while driving forward, obstacle detection and avoidance, and stuck detection that triggers an "unstuck" maneuver.
 
