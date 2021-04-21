@@ -7,6 +7,8 @@
 
 This repository has the 3D models, wiring details, and code for the SMARS mini XL. Currently the code is designed for Circuit Python 6.2.0 running on an Adafruit Feather RP2040. It uses a VL53L0X time-of-flight sensor and an APDS-9960 proximity/gesture/color/light sensor connected with i2c, an DRV8833 h-bridge motor driver, a small lipo, and a SPST switch. The code currently includes basic light seeking behavior while driving forward, obstacle detection and avoidance, and stuck detection that triggers an "unstuck" maneuver.
 
+This project started as a remix of the "SMARS mini" design by [Kevin McAleer](https://www.youtube.com/user/kevinmcaleer28). I don't think it shares a single part with that design anymore, but it was an excellent starting point and gave the project an aesthetic theme that has certainly carried on. Thanks Kevin!
+
 .STL and .STEP files are available in the CAD files folder (probably the most current) and at: https://www.thingiverse.com/thing:4810626
 
 Current hardware BOM (this is the list of parts you need to buy and links to buy them): https://docs.google.com/spreadsheets/d/167UUY43PvzWUNg7vgtmYUr31faELwSrEWL3U5X_r1nM/edit?usp=sharing
