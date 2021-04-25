@@ -7,7 +7,7 @@ import busio
 import adafruit_vl53l0x
 import pwmio
 import neopixel
-from digitalio import DigitalInOut, Direction
+from digitalio import DigitalInOut, Direction, Pull
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
 import adafruit_vcnl4040
@@ -43,6 +43,7 @@ neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
 # setup switch input
 switch = DigitalInOut(board.D24)
 switch.direction = Direction.INPUT
+switch.pull = Pull.DOWN
 switch_debounced = Debouncer(switch)
 
 # set up turn and drive parameters
