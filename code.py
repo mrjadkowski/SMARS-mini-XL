@@ -7,6 +7,7 @@ import busio
 import adafruit_vl53l0x
 import pwmio
 import neopixel
+import analogio
 from digitalio import DigitalInOut, Direction, Pull
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
@@ -36,6 +37,11 @@ tof = adafruit_vl53l0x.VL53L0X(i2c)
 
 # initialize VCNL-4040
 sensor = adafruit_vcnl4040.VCNL4040(i2c)
+
+# initialize analog light sensors
+light_front_right = analogio.AnalogIn(board.A2)
+light_front_left = analogio.AnalogIn(board.A1)
+light_rear = analogio.AnalogIn(board.A3)
 
 # initialize NeoPixel
 neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
