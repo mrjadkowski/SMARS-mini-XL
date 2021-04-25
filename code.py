@@ -55,12 +55,20 @@ switch_debounced = Debouncer(switch)
 # set up turn and drive parameters
 start_turn_distance = 5
 stop_turn_distance = 3
-turn_time = 1.5
+turn_time = 2
 abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
 run_flag = False
-turn_right_flag = True
+
+# set up light seeking behavior
+light_right_flag = False
+light_left_flag = False
+light_rear_flag = False
+light_variance = 3000
+# number of seconds between light checks
+light_check_frequency = 1
+last_light_check = 0
 
 # set up stuck decetion
 stuck_check_last = 0
@@ -80,6 +88,9 @@ while True:
     # update light data, calcuate lux
     lux = sensor.lux
 
+    # calculate sensor average for front
+    light_front = (light_front_left.value + light_front_right.value)/2
+
     # set run_flag to true if switch was switched on
     switch_debounced.update()
     if switch_debounced.rose:
@@ -93,15 +104,38 @@ while True:
     if sensor.proximity >= start_turn_distance:
         turn_flag = True
 
-    # if c > 600:
-        # run_flag = False
-
     # if run_flag is true, then drive
     if run_flag:
         # if stuck for more than 20 seconds, stop driving
         if stuck_sequential_counter >= 3:
             run_flag = False
             neopixel.fill((255, 255, 255))
+
+        # Check brightest light direction and set light flags
+        if now >= last_light_check + light_check_frequency:
+            if light_front >= light_rear.value:
+                if light_front_right.value > light_front_left.value + light_variance:
+                    light_right_flag = True
+                    light_left_flag = False
+                    light_rear_flag = False
+
+                elif light_front_left.value > light_front_right.value + light_variance:
+                    light_right_flag = False
+                    light_left_flag = True
+                    light_rear_flag = False
+
+                else:
+                    light_right_flag = False
+                    light_left_flag = False
+                    light_rear_flag = False
+
+            elif light_rear.value > light_front + light_variance:
+                light_right_flag = False
+                light_left_flag = False
+                light_rear_flag = True
+                turn_flag = True
+
+            last_light_check = now
 
         elif stuck_flag:
             neopixel.fill((0, 0, 10))
@@ -139,23 +173,25 @@ while True:
 
             else:
                 turn_flag = False
-                print(turn_right_flag)
-                turn_right_flag = not turn_right_flag
                 start_turn_time = now
 
         # drive straight forward seeking light when greater than start_turn_distance from an obstacle
         else:
             neopixel.fill((0, 10, 0))
-            if lux < last_lux:
-                turn_right_flag = not turn_right_flag
+            # if lux < last_lux:
+                # turn_right_flag = not turn_right_flag
 
-            if turn_right_flag:
-                leftmotor.throttle = 0.7
-                rightmotor.throttle = 0.3
+            if light_right_flag:
+                leftmotor.throttle = 0.5
+                rightmotor.throttle = 0
 
-            if not turn_right_flag:
-                leftmotor.throttle = 0.3
-                rightmotor.throttle = 0.7
+            elif light_left_flag:
+                leftmotor.throttle = 0
+                rightmotor.throttle = 0.5
+
+            else:
+                leftmotor.throttle = 0.5
+                rightmotor.throttle = 0.5
 
             # forward stuck logic
             # perform stuck check once every second
@@ -180,7 +216,7 @@ while True:
                     stuck_timer = now
 
             start_turn_time = now
-            last_lux = lux
+            # last_lux = lux
 
     # if run_flag is false, shut off motors and reset flags
     else:

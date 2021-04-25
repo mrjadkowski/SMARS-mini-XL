@@ -1,26 +1,17 @@
-import board
-import busio
+# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
 import time
-from adafruit_apds9960.apds9960 import APDS9960
-from adafruit_apds9960 import colorutility
+import board
+import analogio
 
-i2c = busio.I2C(board.SCL, board.SDA)
-
-apds = APDS9960(i2c)
-apds.enable_proximity = True
-apds.enable_gesture = True
-apds.enable_color = True
-
-apds.gesture_proximity_threshold = 255
-
-# Uncomment and set the rotation if depending on how your sensor is mounted.
-# apds.rotation = 270 # 270 for CLUE
+light_front_right = analogio.AnalogIn(board.A2)
+light_front_left = analogio.AnalogIn(board.A1)
+light_rear = analogio.AnalogIn(board.A3)
 
 while True:
-    print(apds.proximity)
-    print(apds.color_data)
-    r, g, b, c = apds.color_data
-    lux = colorutility.calculate_lux(r, g, b)
-    print(lux)
+    print("Front Right: ", light_front_right)
+    print("Front Left: ", light_front_left)
+    print("Rear: ", light_rear)
     time.sleep(1)
 
