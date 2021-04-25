@@ -67,7 +67,7 @@ light_left_flag = False
 light_rear_flag = False
 light_variance = 3000
 # number of seconds between light checks
-light_check_frequency = 1
+light_check_frequency = .5
 last_light_check = 0
 
 # set up stuck decetion
