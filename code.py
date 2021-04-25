@@ -1,5 +1,5 @@
 # this is designed to run on an adafruit Feather RP2040 board running Circuit Python 6.2.0
-# using a VL53L0X ToF sensor, APDS-9960 proximity sensor, and a DRV8833 motor driver.
+# using a VL53L0X ToF sensor, VCNL-4040 proximity and light sensor, and a DRV8833 motor driver.
 
 import board
 import time
@@ -10,8 +10,7 @@ import neopixel
 from digitalio import DigitalInOut, Direction
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
-from adafruit_apds9960.apds9960 import APDS9960
-from adafruit_apds9960 import colorutility
+import adafruit_vcnl4040
 
 # set up PWM pins for left motor
 PWM_PIN_A = board.D12  # yellow wire
@@ -35,10 +34,8 @@ rightmotor = motor.DCMotor(pwm_c, pwm_d)
 i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
 
-# initialize APDS-9960
-apds = APDS9960(i2c)
-apds.enable_proximity = True
-apds.enable_color = True
+# initialize VCNL-4040
+sensor = adafruit_vcnl4040.VCNL4040(i2c)
 
 # initialize NeoPixel
 neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
@@ -50,7 +47,7 @@ switch_debounced = Debouncer(switch)
 
 # set up turn and drive parameters
 start_turn_distance = 5
-stop_turn_distance = 2
+stop_turn_distance = 3
 turn_time = 1.5
 abort_turn_time = 5
 start_turn_time = -1
@@ -74,8 +71,7 @@ while True:
     now = time.monotonic()
 
     # update light data, calcuate lux
-    r, g, b, c = apds.color_data
-    lux = colorutility.calculate_lux(r, g, b)
+    lux = sensor.lux
 
     # set run_flag to true if switch was switched on
     switch_debounced.update()
@@ -87,7 +83,7 @@ while True:
         neopixel.fill((0, 0, 0))
 
     # when start_turn_distance or less from an obstacle, set turn flag
-    if apds.proximity >= start_turn_distance:
+    if sensor.proximity >= start_turn_distance:
         turn_flag = True
 
     # if c > 600:
@@ -130,7 +126,7 @@ while True:
                 turn_flag = False
 
             # turn right for turn_time or until stop_turn_distance or more from an obstacle
-            elif apds.proximity > stop_turn_distance or now <= start_turn_time + turn_time:
+            elif sensor.proximity > stop_turn_distance or now <= start_turn_time + turn_time:
                 leftmotor.throttle = 0.5
                 rightmotor.throttle = -0.5
 
@@ -138,7 +134,6 @@ while True:
                 turn_flag = False
                 print(turn_right_flag)
                 turn_right_flag = not turn_right_flag
-                last_c = 0
                 start_turn_time = now
 
         # drive straight forward seeking light when greater than start_turn_distance from an obstacle
@@ -178,7 +173,6 @@ while True:
                     stuck_timer = now
 
             start_turn_time = now
-            # if c != last_c: print(c)
             last_lux = lux
 
     # if run_flag is false, shut off motors and reset flags
