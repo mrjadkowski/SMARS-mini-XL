@@ -31,6 +31,10 @@ pwm_c = pwmio.PWMOut(PWM_PIN_C, frequency=50)
 pwm_d = pwmio.PWMOut(PWM_PIN_D, frequency=50)
 rightmotor = motor.DCMotor(pwm_c, pwm_d)
 
+# set up sleep function for motor controller
+motor_run = DigitalInOut(board.SCK)
+motor_run.direction = Direction.OUTPUT
+
 # initialize i2c and time of flight sensor
 i2c = busio.I2C(board.SCL, board.SDA)
 tof = adafruit_vl53l0x.VL53L0X(i2c)
@@ -94,11 +98,11 @@ while True:
     # set run_flag to true if switch was switched on
     switch_debounced.update()
     if switch_debounced.rose:
-        run_flag = True
+        run_flag = not run_flag
     # set run_flag to false of switch was switched off
-    if switch_debounced.fell:
-        run_flag = False
-        neopixel.fill((0, 0, 0))
+    # if switch_debounced.fell:
+        # run_flag = False
+        # neopixel.fill((0, 0, 0))
 
     # when start_turn_distance or less from an obstacle, set turn flag
     if sensor.proximity >= start_turn_distance:
@@ -106,6 +110,8 @@ while True:
 
     # if run_flag is true, then drive
     if run_flag:
+        #enable motor controller
+        motor_run = True
         # if stuck for more than 20 seconds, stop driving
         if stuck_sequential_counter >= 3:
             run_flag = False
@@ -222,6 +228,7 @@ while True:
     else:
         leftmotor.throttle = 0
         rightmotor.throttle = 0
+        motor_run = False
         turn_flag = False
         stuck_flag = False
         turn_right_flag = True
