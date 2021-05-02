@@ -8,7 +8,7 @@ import adafruit_vl53l0x
 import pwmio
 import neopixel
 import analogio
-from digitalio import DigitalInOut, Direction, Pull
+import digitalio
 from adafruit_debouncer import Debouncer
 from adafruit_motor import motor
 import adafruit_vcnl4040
@@ -32,8 +32,9 @@ pwm_d = pwmio.PWMOut(PWM_PIN_D, frequency=50)
 rightmotor = motor.DCMotor(pwm_c, pwm_d)
 
 # set up sleep function for motor controller
-motor_run = DigitalInOut(board.SCK)
-motor_run.direction = Direction.OUTPUT
+motor_run = digitalio.DigitalInOut(board.D25)
+motor_run.direction = digitalio.Direction.OUTPUT
+motor_run.value = True
 
 # initialize i2c and time of flight sensor
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -51,9 +52,9 @@ light_rear = analogio.AnalogIn(board.A3)
 neopixel = neopixel.NeoPixel(board.NEOPIXEL, 1)
 
 # setup switch input
-switch = DigitalInOut(board.D24)
-switch.direction = Direction.INPUT
-switch.pull = Pull.DOWN
+switch = digitalio.DigitalInOut(board.D24)
+switch.direction = digitalio.Direction.INPUT
+switch.pull = digitalio.Pull.DOWN
 switch_debounced = Debouncer(switch)
 
 # set up turn and drive parameters
@@ -64,6 +65,11 @@ abort_turn_time = 5
 start_turn_time = -1
 turn_flag = False
 run_flag = False
+
+# set up charge input
+charge = digitalio.DigitalInOut(board.SCK)
+charge.direction = digitalio.Direction.INPUT
+charge_debounced = Debouncer(charge)
 
 # set up light seeking behavior
 light_right_flag = False
@@ -94,6 +100,14 @@ while True:
 
     # calculate sensor average for front
     light_front = (light_front_left.value + light_front_right.value)/2
+
+    # set run flag depending on charging
+    charge_debounced.update()
+    if charge_debounced fell:
+        run_flag = False
+
+    if charge_debounced rose:
+        run_flag = True
 
     # set run_flag to true if switch was switched on
     switch_debounced.update()
@@ -228,7 +242,6 @@ while True:
     else:
         leftmotor.throttle = 0
         rightmotor.throttle = 0
-        motor_run = False
         turn_flag = False
         stuck_flag = False
         turn_right_flag = True
