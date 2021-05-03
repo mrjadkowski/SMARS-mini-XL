@@ -103,10 +103,10 @@ while True:
 
     # set run flag depending on charging
     charge_debounced.update()
-    if charge_debounced fell:
+    if charge_debounced.fell:
         run_flag = False
 
-    if charge_debounced rose:
+    if charge_debounced.rose:
         run_flag = True
 
     # set run_flag to true if switch was switched on
