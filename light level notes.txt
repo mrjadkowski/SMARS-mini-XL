@@ -1,0 +1,7 @@
+Light level notes
+
+Not enough light to charge analog values:
+20400
+
+Not enough light to charge lux values
+450
